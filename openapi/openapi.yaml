@@ -145,12 +145,14 @@ components:
         date:
           type: string
           format: date
-        time:
-          type: string
         place:
           type: string
-        goal:
-          type: string
+        goals:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/Goal'
         result:
           $ref: '#/components/schemas/Result'
         review:
@@ -160,14 +162,27 @@ components:
     NoteUpdateRequest:
       type: object
       properties:
-        goal:
-          type: string
+        goals:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/Goal'
         result:
           $ref: '#/components/schemas/Result'
         review:
           $ref: '#/components/schemas/Review'
         memorablePlay:
           $ref: '#/components/schemas/MemorablePlay'
+    Goal:
+      type: object
+      properties:
+        text:
+          type: string
+        score:
+          type: integer
+          minimum: 0
+          maximum: 10
     Result:
       type: object
       properties:
