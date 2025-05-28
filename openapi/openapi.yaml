@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: Soccer Notebook API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+paths:
+  /users:
+    post:
+      summary: ユーザー登録
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        '201':
+          description: ユーザー作成成功
+    get:
+      summary: ユーザー一覧取得
+      responses:
+        '200':
+          description: ユーザー一覧
+  /users/{userId}:
+    get:
+      summary: ユーザー詳細取得
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ユーザー情報
+    put:
+      summary: ユーザー情報更新
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: ユーザー更新成功
+    delete:
+      summary: ユーザー削除
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ユーザー削除成功
+  /notes:
+    post:
+      summary: サッカーノート登録
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteCreateRequest'
+      responses:
+        '201':
+          description: ノート作成成功
+    get:
+      summary: サッカーノート一覧取得
+      responses:
+        '200':
+          description: ノート一覧
+  /notes/{noteId}:
+    get:
+      summary: サッカーノート詳細取得
+      parameters:
+        - in: path
+          name: noteId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ノート情報
+    put:
+      summary: サッカーノート更新
+      parameters:
+        - in: path
+          name: noteId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteUpdateRequest'
+      responses:
+        '200':
+          description: ノート更新成功
+    delete:
+      summary: サッカーノート削除
+      parameters:
+        - in: path
+          name: noteId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ノート削除成功
+components:
+  schemas:
+    UserCreateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+    UserUpdateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        avatarUrl:
+          type: string
+    NoteCreateRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        time:
+          type: string
+        place:
+          type: string
+        goal:
+          type: string
+        result:
+          $ref: '#/components/schemas/Result'
+        review:
+          $ref: '#/components/schemas/Review'
+        memorablePlay:
+          $ref: '#/components/schemas/MemorablePlay'
+    NoteUpdateRequest:
+      type: object
+      properties:
+        goal:
+          type: string
+        result:
+          $ref: '#/components/schemas/Result'
+        review:
+          $ref: '#/components/schemas/Review'
+        memorablePlay:
+          $ref: '#/components/schemas/MemorablePlay'
+    Result:
+      type: object
+      properties:
+        opponent:
+          type: string
+        score:
+          type: string
+    Review:
+      type: object
+      properties:
+        did:
+          type: string
+        learned:
+          type: string
+        next:
+          type: string
+    MemorablePlay:
+      type: object
+      properties:
+        description:
+          type: string
+        imageUrl:
+          type: string 
