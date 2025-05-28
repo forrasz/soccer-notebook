@@ -6,7 +6,7 @@
 ## ディレクトリ構成
 
 - backend: Spring Boot (Kotlin) バックエンドAPI
-- frontend: React (TypeScript) フロントエンド
+- front: React (TypeScript) フロントエンド
 - migration: DBマイグレーション用
 - openapi: OpenAPI仕様書
 - nginx: リバースプロキシ設定
