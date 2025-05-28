@@ -1,28 +1,35 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-
-const Login = () => <div>ログイン画面</div>;
-const Register = () => <div>ユーザー登録画面</div>;
-const NoteList = () => <div>ノート一覧画面</div>;
-const NoteDetail = () => <div>ノート詳細画面</div>;
-const NoteEdit = () => <div>ノート編集画面</div>;
+import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import NoteList from './pages/NoteList';
+import NoteDetail from './pages/NoteDetail';
+import NoteEdit from './pages/NoteEdit';
 
 function App() {
   return (
     <Router>
-      <nav style={{ margin: 10 }}>
-        <Link to="/login" style={{ marginRight: 10 }}>ログイン</Link>
-        <Link to="/register" style={{ marginRight: 10 }}>ユーザー登録</Link>
-        <Link to="/notes" style={{ marginRight: 10 }}>ノート一覧</Link>
-      </nav>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/notes" element={<NoteList />} />
-        <Route path="/notes/:noteId" element={<NoteDetail />} />
-        <Route path="/notes/:noteId/edit" element={<NoteEdit />} />
-        <Route path="*" element={<Login />} />
-      </Routes>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            サッカーノート
+          </Typography>
+          <Button color="inherit" component={Link} to="/login">ログイン</Button>
+          <Button color="inherit" component={Link} to="/register">ユーザー登録</Button>
+          <Button color="inherit" component={Link} to="/notes">ノート一覧</Button>
+        </Toolbar>
+      </AppBar>
+      <Container maxWidth="md">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/notes" element={<NoteList />} />
+          <Route path="/notes/:noteId" element={<NoteDetail />} />
+          <Route path="/notes/:noteId/edit" element={<NoteEdit />} />
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </Container>
     </Router>
   );
 }
