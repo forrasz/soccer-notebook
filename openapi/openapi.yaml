@@ -4,6 +4,7 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:8080/api
+
 paths:
   /users:
     post:
@@ -62,6 +63,30 @@ paths:
       responses:
         '204':
           description: ユーザー削除成功
+  /login:
+    post:
+      summary: ログイン
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: 認証失敗
+  /logout:
+    post:
+      summary: ログアウト
+      responses:
+        '200':
+          description: ログアウト成功
   /notes:
     post:
       summary: サッカーノート登録
@@ -74,11 +99,55 @@ paths:
       responses:
         '201':
           description: ノート作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note' # 登録成功時は作成されたノートを返す想定
     get:
       summary: サッカーノート一覧取得
+      parameters:
+        - in: query
+          name: date
+          schema:
+            type: string
+            format: date
+          description: 絞り込む日付
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: ページ番号
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            default: 30
+            enum: [10, 30, 50]
+          description: 1ページあたりの件数
       responses:
         '200':
-          description: ノート一覧
+          description: ノート一覧（ページネーション情報含む想定）
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalCount:
+                    type: integer
+                    description: 全件数
+                  page:
+                    type: integer
+                    description: 現在のページ番号
+                  limit:
+                    type: integer
+                    description: 1ページあたりの件数
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NoteSummary' # 一覧表示用の簡易スキーマを想定
   /notes/{noteId}:
     get:
       summary: サッカーノート詳細取得
@@ -91,6 +160,10 @@ paths:
       responses:
         '200':
           description: ノート情報
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note' # 詳細取得時は完全なスキーマを返す想定
     put:
       summary: サッカーノート更新
       parameters:
@@ -108,6 +181,10 @@ paths:
       responses:
         '200':
           description: ノート更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note' # 更新成功時は更新されたノートを返す想定
     delete:
       summary: サッカーノート削除
       parameters:
@@ -119,90 +196,11 @@ paths:
       responses:
         '204':
           description: ノート削除成功
+
 components:
   schemas:
-    UserCreateRequest:
-      type: object
-      properties:
-        username:
-          type: string
-        password:
-          type: string
-        email:
-          type: string
-    UserUpdateRequest:
-      type: object
-      properties:
-        username:
-          type: string
-        email:
-          type: string
-        avatarUrl:
-          type: string
-    NoteCreateRequest:
-      type: object
-      properties:
-        date:
-          type: string
-          format: date
-        place:
-          type: string
-        goals:
-          type: array
-          minItems: 3
-          maxItems: 3
-          items:
-            $ref: '#/components/schemas/Goal'
-        result:
-          $ref: '#/components/schemas/Result'
-        review:
-          $ref: '#/components/schemas/Review'
-        memorablePlay:
-          $ref: '#/components/schemas/MemorablePlay'
-    NoteUpdateRequest:
-      type: object
-      properties:
-        goals:
-          type: array
-          minItems: 3
-          maxItems: 3
-          items:
-            $ref: '#/components/schemas/Goal'
-        result:
-          $ref: '#/components/schemas/Result'
-        review:
-          $ref: '#/components/schemas/Review'
-        memorablePlay:
-          $ref: '#/components/schemas/MemorablePlay'
-    Goal:
-      type: object
-      properties:
-        text:
-          type: string
-        score:
-          type: integer
-          minimum: 0
-          maximum: 10
-    Result:
-      type: object
-      properties:
-        opponent:
-          type: string
-        score:
-          type: string
-    Review:
-      type: object
-      properties:
-        did:
-          type: string
-        learned:
-          type: string
-        next:
-          type: string
-    MemorablePlay:
-      type: object
-      properties:
-        description:
-          type: string
-        imageUrl:
-          type: string 
+    # 各ファイルからスキーマ定義をインクルード
+    $ref: './user.yaml#/components/schemas'
+    $ref: './auth.yaml#/components/schemas'
+    $ref: './note.yaml#/components/schemas'
+  # 必要であれば他のcomponentsも分割・参照可能 

@@ -1,0 +1,213 @@
+components:
+  schemas:
+    NoteCreateRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: 日付
+        place:
+          type: string
+          description: 場所
+        actions:
+          type: array
+          description: 今日のテーマ（3つ固定）
+          minItems: 3
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/Action'
+        records:
+          type: array
+          description: 試合結果
+          items:
+            $ref: '#/components/schemas/GameHistory'
+        review:
+          $ref: '#/components/schemas/Review' # 独立したスキーマを参照
+        memorablePlay:
+          type: object
+          description: 記憶に残ったプレー
+          properties:
+            description:
+              type: string
+              description: プレーに関するテキスト
+            drawData:
+              type: array
+              items:
+                $ref: '#/components/schemas/DrawData'
+          required:
+            - drawData
+      required:
+        - date
+        - place
+        - actions
+        - records
+        - review
+        - memorablePlay
+    NoteUpdateRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: 日付
+        place:
+          type: string
+          description: 場所
+        actions:
+          type: array
+          description: 今日のテーマ（3つ固定）
+          minItems: 3
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/Action'
+        records:
+          type: array
+          description: 試合結果
+          items:
+            $ref: '#/components/schemas/GameHistory'
+        review:
+          $ref: '#/components/schemas/Review' # 独立したスキーマを参照
+        memorablePlay:
+          type: object
+          description: 記憶に残ったプレー
+          properties:
+            description:
+              type: string
+              description: プレーに関するテキスト
+            drawData:
+              type: array
+              items:
+                $ref: '#/components/schemas/DrawData'
+          required:
+            - drawData
+      required:
+        - date
+        - place
+        - actions
+        - records
+        - review
+        - memorablePlay
+    Note:
+      allOf:
+        - $ref: '#/components/schemas/NoteCreateRequest' # 作成・更新スキーマをベースに
+        - type: object
+          properties:
+            id:
+              type: string
+              description: ノートのID
+            createdAt:
+              type: string
+              format: date-time
+              description: 作成日時
+            updatedAt:
+              type: string
+              format: date-time
+              description: 更新日時
+          required:
+            - id
+            - createdAt
+            - updatedAt
+    NoteSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ノートのID
+        date:
+          type: string
+          format: date
+          description: 日付
+        place:
+          type: string
+          description: 場所
+        action:
+          type: string
+          description: 主要な目標（一覧表示用にgoalsから抜粋などを想定）
+      required:
+        - id
+        - date
+        - place
+        - action
+    Action:
+      type: object
+      properties:
+        text:
+          type: string
+          description: 目標内容
+        score:
+          type: integer
+          description: 達成度 (0-3, nullは未評価)
+          nullable: true
+          minimum: 0
+          maximum: 3
+      required:
+        - text
+    GameHistory:
+      type: object
+      description: 試合記録
+      properties:
+        opponent:
+          type: string
+          description: 相手チーム名
+        score1:
+          type: string
+          description: 自チーム得点
+        score2:
+          type: string
+          description: 相手チーム得点
+      required:
+        - opponent
+        - score1
+        - score2
+    Review:
+      type: object
+      description: ふりかえり項目
+      properties:
+        done:
+          type: array
+          items:
+            type: string
+          description: やったこと
+        learned:
+          type: array
+          items:
+            type: string
+          description: わかったこと
+        nextAction:
+          type: array
+          items:
+            type: string
+          description: 次にやること
+      required:
+        - done
+        - learned
+        - nextAction
+    DrawData:
+      type: object
+      description: 記憶に残ったプレーの描画データ
+      properties:
+        type:
+          type: string
+          enum: ['circle', 'path']
+          description: 描画タイプ
+        color:
+          type: string
+          description: 描画色
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              x:
+                type: number
+              y:
+                type: number
+            required:
+              - x
+              - y
+          description: 描画点の配列
+      required:
+        - type
+        - color
+        - data 
