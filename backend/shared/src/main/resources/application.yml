@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: soccer-notebook-api
+  
+  # Jackson設定
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Asia/Tokyo
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# Swagger UI設定
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  packages-to-scan: com.soccer.notebook.controller
+
+# ログ設定
+logging:
+  level:
+    com.soccer.notebook: DEBUG
+    org.springframework.web: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# CORS設定（開発用）
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always 

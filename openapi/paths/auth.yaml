@@ -1,0 +1,24 @@
+/login:
+  post:
+    summary: ログイン
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LoginRequest'
+    responses:
+      '200':
+        description: ログイン成功
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginResponse'
+      '401':
+        description: 認証失敗
+/logout:
+  post:
+    summary: ログアウト
+    responses:
+      '200':
+        description: ログアウト成功 

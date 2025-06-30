@@ -3,8 +3,8 @@ import { Container, Typography, List, ListItem, ListItemText, ListItemSecondaryA
 import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 
-// ダミーデータ（APIからの取得を想定）
-const allDummyNotes = [
+// ダミーデータ（実際のAPIに置き換える予定）
+const DUMMY_NOTES = [
   { id: 1, date: '2024-06-01', goal: '1点取る', place: 'Aグラウンド' },
   { id: 2, date: '2024-06-02', goal: '守備を頑張る', place: 'Bグラウンド' },
   { id: 3, date: '2024-06-03', goal: 'パス精度を上げる', place: 'Cグラウンド' },
@@ -45,10 +45,10 @@ const ITEMS_PER_PAGE_OPTIONS = [10, 30, 50];
 const NoteList: React.FC = () => {
   const [filterDate, setFilterDate] = React.useState<string>('');
   const [page, setPage] = React.useState(1);
-  const [itemsPerPage, setItemsPerPage] = React.useState(ITEMS_PER_PAGE_OPTIONS[1]); // デフォルト30件
+  const [itemsPerPage, setItemsPerPage] = React.useState(ITEMS_PER_PAGE_OPTIONS[1]);
 
-  const filteredNotes = allDummyNotes.filter(note =>
-    filterDate ? note.date === filterDate : true
+  const filteredNotes = DUMMY_NOTES.filter(note =>
+    !filterDate || note.date === filterDate
   );
 
   const pageCount = Math.ceil(filteredNotes.length / itemsPerPage);
@@ -63,7 +63,7 @@ const NoteList: React.FC = () => {
 
   const handleItemsPerPageChange = (event: SelectChangeEvent<number>) => {
     setItemsPerPage(event.target.value as number);
-    setPage(1); // 表示件数変更時に1ページ目に戻る
+    setPage(1);
   };
 
   return (
@@ -77,7 +77,8 @@ const NoteList: React.FC = () => {
             新規登録
           </Button>
         </Box>
-        {/* 絞り込み・表示件数選択 */}
+        
+        {/* フィルター・表示設定 */}
         <Box display="flex" gap={2} mb={2}>
           <TextField
             label="日付で絞り込む"
@@ -96,11 +97,15 @@ const NoteList: React.FC = () => {
               size="small"
             >
               {ITEMS_PER_PAGE_OPTIONS.map(option => (
-                <MenuItem key={option} value={option}>{option}件</MenuItem>
+                <MenuItem key={option} value={option}>
+                  {option}件
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
         </Box>
+
+        {/* ノート一覧 */}
         <List>
           {displayedNotes.map(note => (
             <ListItem key={note.id} divider>
@@ -122,7 +127,7 @@ const NoteList: React.FC = () => {
                   component={Link}
                   to={`/notes/${note.id}/edit`}
                   edge="end"
-                  aria-label="edit"
+                  aria-label="編集"
                 >
                   <EditIcon />
                 </IconButton>
@@ -130,10 +135,16 @@ const NoteList: React.FC = () => {
             </ListItem>
           ))}
         </List>
-        {/* ページャー */}
+
+        {/* ページネーション */}
         {pageCount > 1 && (
           <Box mt={2} display="flex" justifyContent="center">
-            <Pagination count={pageCount} page={page} onChange={handlePageChange} />
+            <Pagination 
+              count={pageCount} 
+              page={page} 
+              onChange={handlePageChange} 
+              color="primary"
+            />
           </Box>
         )}
       </Paper>

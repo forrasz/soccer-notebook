@@ -1,46 +1,133 @@
-# Getting Started with Create React App
+# サッカーノートアプリ - フロントエンド
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+サッカーノートアプリのReact TypeScriptフロントエンドプロジェクトです。
 
-## Available Scripts
+## 技術スタック
 
-In the project directory, you can run:
+- **React** 19.1.0
+- **TypeScript** 4.9.5
+- **Material UI** 7.1.0
+- **React Router DOM** 7.6.1
+
+## 開発環境セットアップ
+
+### 前提条件
+- Node.js (推奨バージョン: 16以上)
+- npm
+
+### 依存関係のインストール
+
+```bash
+npm install
+```
+
+## 利用可能なスクリプト
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+開発モードでアプリケーションを起動します。
+ブラウザで [http://localhost:3000](http://localhost:3000) にアクセスして確認できます。
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+ファイルを編集すると自動でページがリロードされます。
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+テストランナーをインタラクティブウォッチモードで実行します。
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+本番用にアプリケーションを`build`フォルダにビルドします。
+React を本番モードで正しくバンドルし、最高のパフォーマンスのためにビルドを最適化します。
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `npm run bundle:openapi`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+OpenAPI仕様ファイルをバンドルします。
 
-### `npm run eject`
+## プロジェクト構造（リファクタリング後）
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+src/
+├── components/              # 再利用可能なコンポーネント
+│   ├── StarRating.tsx      # 星評価コンポーネント
+│   ├── TextFieldList.tsx   # テキストフィールドリストコンポーネント
+│   ├── ThemeSection.tsx    # テーマセクションコンポーネント
+│   ├── RecordSection.tsx   # 試合結果セクションコンポーネント
+│   └── SoccerFieldCanvas.tsx # サッカーフィールドキャンバスコンポーネント
+├── pages/                  # ページコンポーネント
+│   ├── Login.tsx          # ログインページ
+│   ├── Register.tsx       # ユーザー登録ページ
+│   ├── NoteList.tsx       # ノート一覧ページ
+│   ├── NoteDetail.tsx     # ノート詳細ページ
+│   └── NoteEdit.tsx       # ノート編集ページ
+├── hooks/                  # カスタムフック
+│   ├── useNoteForm.ts     # ノートフォーム管理フック
+│   └── useSoccerField.ts  # サッカーフィールドキャンバス管理フック
+├── types/                  # 型定義
+│   └── index.ts           # 共通型定義
+├── constants/              # 定数
+│   └── index.ts           # アプリケーション定数
+├── utils/                  # ユーティリティ関数
+│   ├── index.ts           # 共通ユーティリティ
+│   └── canvasUtils.ts     # キャンバス描画ユーティリティ
+├── App.tsx                # メインアプリケーションコンポーネント
+└── index.tsx              # エントリーポイント
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## リファクタリングによる改善点
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 1. **ディレクトリ構造の整理**
+- `types/` - 型定義を一元管理
+- `hooks/` - カスタムフックの分離
+- `constants/` - 定数の集約
+- `utils/` - ユーティリティ関数の整理
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 2. **コンポーネントの分割とモジュール化**
+- 大きなコンポーネント（NoteEdit: 278行 → 110行）を小さな再利用可能なコンポーネントに分割
+- StarRating、TextFieldList、ThemeSection、RecordSectionを独立したコンポーネントとして分離
+- SoccerFieldCanvas（270行 → 110行）の描画ロジックを分離
 
-## Learn More
+### 3. **カスタムフックによる状態管理**
+- `useNoteForm` - フォーム状態管理ロジックの分離
+- `useSoccerField` - キャンバス操作ロジックの分離
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 4. **型安全性の向上**
+- すべての型定義を `types/index.ts` に集約
+- Props型の明確な定義
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 5. **保守性の向上**
+- 責任の分離によりテストしやすい構造
+- 再利用可能なコンポーネント設計
+- 定数とユーティリティの分離による変更への対応力向上
+
+## 主な機能
+
+- ユーザー認証（ログイン・登録）
+- サッカーノートの作成・編集・削除
+- ノート一覧の表示・検索・フィルタリング
+- 星評価システム
+- サッカーフィールド図での戦術描画
+- 動的フォーム要素（テーマ、試合記録、振り返り項目）
+
+## 今後の拡張予定
+
+- API連携の実装
+- 認証システムの実装
+- データ永続化
+- レスポンシブデザインの改善
+- PWA対応
+
+## Docker での実行
+
+プロジェクトルートで以下のコマンドを実行してください：
+
+```bash
+docker compose up --build
+```
+
+フロントエンドは [http://localhost/](http://localhost/) でアクセスできます。
+
+## API連携
+
+バックエンドAPIとの連携は、OpenAPI Generatorで自動生成されたクライアントコードを使用します。
+
+詳細はプロジェクトルートの`README.md`を参照してください。
