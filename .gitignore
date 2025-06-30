@@ -23,6 +23,10 @@ backend/build/
 backend/.env
 *.iml
 
+# Gradle
+.gradle/
+build/
+
 # IDEA
 .idea/
 *.iml
