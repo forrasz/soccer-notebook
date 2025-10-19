@@ -1,17 +1,25 @@
-package com.soccer.notebook.presentation.controller
+package com.soccer.notebook.presentation
 
-import com.soccer.notebook.presentation.api.UsersApi
-import com.soccer.notebook.presentation.model.User
-import com.soccer.notebook.presentation.model.UserCreateRequest
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
+import org.springframework.web.bind.annotation.*
+import java.time.OffsetDateTime
 import java.util.UUID
 
+data class User(
+    val id: String,
+    val name: String,
+    val email: String
+)
+
+data class UserCreateRequest(
+    val name: String,
+    val email: String
+)
+
 @RestController
-class UsersController : UsersApi {
-    
+@RequestMapping("/users")
+class UsersController {
+
     // ダミーデータストレージ
     private val users = mutableListOf(
         User(
@@ -20,7 +28,7 @@ class UsersController : UsersApi {
             email = "tanaka@example.com"
         ),
         User(
-            id = "user-002", 
+            id = "user-002",
             name = "佐藤花子",
             email = "sato@example.com"
         ),
@@ -31,18 +39,20 @@ class UsersController : UsersApi {
         )
     )
 
-    override fun usersGet(): ResponseEntity<List<User>> {
-        return ResponseEntity.ok(users)
+    @GetMapping
+    fun getUsers(): List<User> {
+        return users
     }
 
-    override fun usersPost(userCreateRequest: UserCreateRequest): ResponseEntity<Unit> {
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createUser(@RequestBody request: UserCreateRequest): User {
         val newUser = User(
             id = "user-${UUID.randomUUID().toString().substring(0, 8)}",
-            name = userCreateRequest.name,
-            email = userCreateRequest.email
+            name = request.name,
+            email = request.email
         )
         users.add(newUser)
-        
-        return ResponseEntity.status(HttpStatus.CREATED).build()
+        return newUser
     }
 } 
