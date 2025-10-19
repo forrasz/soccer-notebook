@@ -1,14 +1,19 @@
-package com.soccer.notebook.presentation.controller
+package com.soccer.notebook.presentation
 
-import com.soccer.notebook.presentation.api.NotesApi
-import com.soccer.notebook.presentation.model.Note
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.time.OffsetDateTime
 
+data class Note(
+    val id: String,
+    val title: String,
+    val content: String,
+    val createdAt: OffsetDateTime
+)
+
 @RestController
-class NotesController : NotesApi {
-    
+@RequestMapping("/notes")
+class NotesController {
+
     // ダミーデータストレージ
     private val notes = mutableListOf(
         Note(
@@ -43,16 +48,18 @@ class NotesController : NotesApi {
         )
     )
 
-    override fun notesGet(page: Int, limit: Int): ResponseEntity<List<Note>> {
+    @GetMapping
+    fun getNotes(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "30") limit: Int
+    ): List<Note> {
         val startIndex = page * limit
         val endIndex = minOf(startIndex + limit, notes.size)
-        
-        val paginatedNotes = if (startIndex < notes.size) {
+
+        return if (startIndex < notes.size) {
             notes.subList(startIndex, endIndex)
         } else {
             emptyList()
         }
-        
-        return ResponseEntity.ok(paginatedNotes)
     }
 } 
